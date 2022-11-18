@@ -4,13 +4,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { authRouter } from './routes/auth';
 import { AppDataSource } from './models/database/data-source';
+import { accountRouter } from './routes/account';
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api', authRouter);
+app.use('/api', authRouter, accountRouter);
 
 AppDataSource.initialize()
     .then(() => {

@@ -15,6 +15,9 @@ class Database {
             where: {
                 username,
             },
+            relations: {
+                account: true,
+            },
         });
         return result;
     }
@@ -39,10 +42,34 @@ class Database {
             newUser.password = user.password;
             newUser.account = account;
             const result = await usersRepository.save(newUser);
+
             return result;
         } catch (error) {
             throw new Error((error as Error).message);
         }
+    }
+
+    async showBalance(id: string): Promise<Accounts | null> {
+        try {
+            const result = await accountsRepository.findOneBy({
+                id,
+            });
+            return result;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async findUserById(id: string): Promise<Users | null> {
+        const result = await usersRepository.findOne({
+            where: {
+                id,
+            },
+            relations: {
+                account: true,
+            },
+        });
+        return result;
     }
 }
 
