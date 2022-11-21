@@ -7,11 +7,11 @@ const showBalance = async (req: Request, res: Response) => {
         const token = req.headers.authorization!.split(' ')[1];
         const payload = decryptToken(token);
 
-        const result = await Database.showBalance(payload?.account?.id);
+        const result = await Database.showBalance(payload!.user.account.id);
         if (result) {
             return res
                 .status(200)
-                .json({ msg: `Balance: R$ ${result.balance}` });
+                .json({ msg: `Balance: R$ ${result.balance.toFixed(2)}` });
         }
         return res.status(404).json({
             msg: 'Ops! Você não pode visualizar um balance que não seja o seu.',
@@ -21,7 +21,6 @@ const showBalance = async (req: Request, res: Response) => {
     }
 };
 
-//salvar transação na tabela transactions
 const transferMoney = async (req: Request, res: Response) => {
     try {
         const { username, money }: { username: string; money: number } =
