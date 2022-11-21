@@ -114,6 +114,33 @@ class Database {
                 },
                 accountUpdate,
             );
+
+            const transaction = await this.createTransaction(
+                debitedAccount,
+                creditedAccount,
+                value,
+            );
+
+            return transaction;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    private async createTransaction(
+        debitedAccount: Accounts,
+        creditedAccount: Accounts,
+        value: number,
+    ) {
+        try {
+            const newTransaction = new Transactions();
+
+            newTransaction.creditedAccount = creditedAccount;
+            newTransaction.debitedAccount = debitedAccount;
+            newTransaction.value = value;
+
+            const result = await transactionsRepository.save(newTransaction);
+            return result;
         } catch (error) {
             throw new Error((error as Error).message);
         }
