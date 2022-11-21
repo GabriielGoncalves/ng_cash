@@ -10,15 +10,22 @@ export const register = async (
     next: NextFunction,
 ) => {
     try {
-        const user = req.body;
+        const user: {
+            username: string;
+            password: string;
+        } = req.body;
+
         const userFound = await Database.findUserByName(user.username);
         if (userFound) {
             return res.status(406).json({
                 message: `Usuário existente. Por favor, informe outro username para cadastro`,
             });
         }
+
         user.password = await hashPassword(user.password);
+
         const result = await Database.registerNewUser(user);
+
         return res.status(200).json({ msg: result });
     } catch (error) {
         next(error);

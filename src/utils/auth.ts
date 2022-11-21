@@ -11,7 +11,7 @@ export const validatePassword = async (
 };
 
 export const generateToken = (user: Users): string => {
-    const token = jwt.sign({ ...user }, process.env.JWT_SECRET as Secret, {
+    const token = jwt.sign({ user }, process.env.JWT_SECRET as Secret, {
         expiresIn: '24h',
     });
     return token;

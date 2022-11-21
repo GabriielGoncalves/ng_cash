@@ -21,7 +21,7 @@ class Database {
         });
         return result;
     }
-    async createAccount(): Promise<Accounts> {
+    private async createAccount(): Promise<Accounts> {
         try {
             const newAccount = new Accounts();
             newAccount.balance = 100;
@@ -60,16 +60,63 @@ class Database {
         }
     }
 
-    async findUserById(id: string): Promise<Users | null> {
-        const result = await usersRepository.findOne({
-            where: {
-                id,
-            },
-            relations: {
-                account: true,
-            },
-        });
-        return result;
+    async transfer(senderUser: Users, recipientUser: Users, value: number) {
+        try {
+            const debitedAccount = await this.findAccount(
+                senderUser.account.id,
+            );
+
+            const creditedAccount = await this.findAccount(
+                recipientUser.account.id,
+            );
+
+            await this.updateBalance(debitedAccount!, creditedAccount!, value);
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async findAccount(id: string) {
+        try {
+            const result = await accountsRepository.findOne({
+                where: {
+                    id,
+                },
+            });
+            return result;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    private async updateBalance(
+        debitedAccount: Accounts,
+        creditedAccount: Accounts,
+        value: number,
+    ) {
+        try {
+            let accountUpdate = new Accounts();
+            accountUpdate.balance = debitedAccount.balance - value;
+
+            await accountsRepository.update(
+                {
+                    id: debitedAccount.id,
+                },
+                accountUpdate,
+            );
+
+            accountUpdate = new Accounts();
+            accountUpdate.balance = creditedAccount.balance + value;
+
+            await accountsRepository.update(
+                {
+                    id: creditedAccount.id,
+                },
+                accountUpdate,
+            );
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
     }
 }
 
