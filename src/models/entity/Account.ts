@@ -5,6 +5,6 @@ export class Accounts {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column('decimal')
+    @Column({ type: 'double precision', default: 100.0 })
     balance: number;
 }
