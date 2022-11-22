@@ -6,7 +6,7 @@ export const userValidator = [
     body('password')
         .isString()
         .exists()
-        .matches(/^(?=.?[A-Z])(?=.?[a-z])(?=.*?[0-9]).{8,}$/),
+        .matches(/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z.]{8,}$/),
 ];
 
 export const setValidationResult = (
