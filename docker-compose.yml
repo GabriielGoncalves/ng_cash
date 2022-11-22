@@ -4,7 +4,7 @@ services:
   app:
     build: .
     entrypoint: .docker/entrypoint.sh
-    container_name: ts-app
+    container_name: ng_cash-app
     ports:
       - "3000:3000"
       - "5555:5555"
@@ -15,12 +15,12 @@ services:
 
   db:
     build: .docker/postgres
-    container_name: ts-db
+    container_name: ng_cash-db
     tty: true
     ports:
       - "5433:5432"
     volumes:
       - .docker/dbdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
