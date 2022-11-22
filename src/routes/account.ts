@@ -14,3 +14,9 @@ accountRouter.post(
     verifyToken,
     accountController.transferMoney,
 );
+
+accountRouter.get(
+    '/account/extract',
+    verifyToken,
+    accountController.showExtract,
+);

@@ -21,6 +21,7 @@ class Database {
         });
         return result;
     }
+
     private async createAccount(): Promise<Accounts> {
         try {
             const newAccount = new Accounts();
@@ -31,6 +32,7 @@ class Database {
             throw new Error((error as Error).message);
         }
     }
+
     async registerNewUser(user: {
         username: string;
         password: string;
@@ -76,7 +78,7 @@ class Database {
         }
     }
 
-    async findAccount(id: string) {
+    private async findAccount(id: string) {
         try {
             const result = await accountsRepository.findOne({
                 where: {
@@ -140,6 +142,25 @@ class Database {
             newTransaction.value = value;
 
             const result = await transactionsRepository.save(newTransaction);
+            return result;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async showExtract(user: Users) {
+        try {
+            const accountFound = await this.findAccount(user.account.id);
+            const result = await transactionsRepository.find({
+                where: [
+                    { creditedAccount: accountFound! },
+                    { debitedAccount: accountFound! },
+                ],
+                relations: {
+                    creditedAccount: true,
+                    debitedAccount: true,
+                },
+            });
             return result;
         } catch (error) {
             throw new Error((error as Error).message);

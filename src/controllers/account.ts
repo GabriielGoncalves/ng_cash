@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
+import { getPayloadToken } from '../utils/getPayloadToken';
 import Database from '../models/database/index';
-import { decryptToken } from '../utils/decryptToken';
 
 const showBalance = async (req: Request, res: Response) => {
     try {
-        const token = req.headers.authorization!.split(' ')[1];
-        const payload = decryptToken(token);
-
+        const payload = getPayloadToken(req);
         const result = await Database.showBalance(payload!.user.account.id);
         if (result) {
             return res
@@ -26,8 +24,7 @@ const transferMoney = async (req: Request, res: Response) => {
         const { username, money }: { username: string; money: number } =
             req.body;
 
-        const token = req.headers.authorization!.split(' ')[1];
-        const payload = decryptToken(token);
+        const payload = getPayloadToken(req);
 
         const user = await Database.findUserByName(payload!.user.username);
 
@@ -56,7 +53,25 @@ const transferMoney = async (req: Request, res: Response) => {
     }
 };
 
+const showExtract = async (req: Request, res: Response) => {
+    try {
+        const payload = getPayloadToken(req);
+        const result = await Database.showExtract(payload!.user);
+
+        if (!result) {
+            return res.status(200).json({
+                msg: 'Ops! Você ainda não realizou nenhuma transação para visualizar.',
+            });
+        }
+
+        return res.status(200).json({ msg: result });
+    } catch (error) {
+        throw new Error((error as Error).message);
+    }
+};
+
 export default {
     showBalance,
     transferMoney,
+    showExtract,
 };
