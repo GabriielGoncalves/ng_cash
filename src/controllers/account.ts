@@ -70,8 +70,43 @@ const showExtract = async (req: Request, res: Response) => {
     }
 };
 
+const showTransactionsSend = async (req: Request, res: Response) => {
+    try {
+        const payload = getPayloadToken(req);
+        const result = await Database.showTransactionsSend(payload!.user);
+
+        if (!result) {
+            return res.status(200).json({
+                msg: 'Ops! Você ainda não realizou nenhuma transação para visualizar.',
+            });
+        }
+
+        return res.status(200).json({ msg: result });
+    } catch (error) {
+        throw new Error((error as Error).message);
+    }
+};
+
+const showTransactionsReceived = async (req: Request, res: Response) => {
+    try {
+        const payload = getPayloadToken(req);
+        const result = await Database.showTransactionsReceived(payload!.user);
+
+        if (!result) {
+            return res.status(200).json({
+                msg: 'Ops! Você ainda não recebeu nenhuma transação para visualizar.',
+            });
+        }
+        return res.status(200).json({ msg: result });
+    } catch (error) {
+        throw new Error((error as Error).message);
+    }
+};
+
 export default {
     showBalance,
     transferMoney,
     showExtract,
+    showTransactionsSend,
+    showTransactionsReceived,
 };

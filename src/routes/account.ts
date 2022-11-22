@@ -20,3 +20,15 @@ accountRouter.get(
     verifyToken,
     accountController.showExtract,
 );
+
+accountRouter.get(
+    '/account/extract/cash-in',
+    verifyToken,
+    accountController.showTransactionsReceived,
+);
+
+accountRouter.get(
+    '/account/extract/cash-out',
+    verifyToken,
+    accountController.showTransactionsSend,
+);

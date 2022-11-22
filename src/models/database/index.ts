@@ -160,8 +160,92 @@ class Database {
                     creditedAccount: true,
                     debitedAccount: true,
                 },
+                select: {
+                    id: true,
+                    value: true,
+                    createdAt: true,
+                    debitedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                    creditedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                },
+                order: {
+                    createdAt: -1,
+                },
             });
             return result;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async showTransactionsSend(user: Users) {
+        try {
+            const accountFound = await this.findAccount(user.account.id);
+            const transactions = await transactionsRepository.find({
+                where: {
+                    debitedAccount: accountFound!,
+                },
+                relations: {
+                    creditedAccount: true,
+                    debitedAccount: true,
+                },
+                select: {
+                    id: true,
+                    value: true,
+                    createdAt: true,
+                    debitedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                    creditedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                },
+                order: {
+                    createdAt: -1,
+                },
+            });
+            return transactions;
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async showTransactionsReceived(user: Users) {
+        try {
+            const accountFound = await this.findAccount(user.account.id);
+            const transactions = await transactionsRepository.find({
+                where: {
+                    creditedAccount: accountFound!,
+                },
+                relations: {
+                    creditedAccount: true,
+                    debitedAccount: true,
+                },
+                select: {
+                    id: true,
+                    value: true,
+                    createdAt: true,
+                    debitedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                    creditedAccount: {
+                        id: true,
+                        balance: false,
+                    },
+                },
+                order: {
+                    createdAt: -1,
+                },
+            });
+            return transactions;
         } catch (error) {
             throw new Error((error as Error).message);
         }
