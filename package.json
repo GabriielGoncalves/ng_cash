@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --files ./src/index.ts",
     "migration:generate": "typeorm-ts-node-commonjs -d ./src/models/database/data-source.ts migration:generate ./src/models/migrations/default",
-    "migration:run": "typeorm-ts-node-commonjs -d ./src/models/database/data-source.ts migration:run"
+    "migration:run": "typeorm-ts-node-commonjs -d ./src/models/database/data-source.ts migration:run",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
